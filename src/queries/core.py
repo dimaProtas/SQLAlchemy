@@ -1,6 +1,6 @@
 import asyncio
 from sqlalchemy import text, insert
-from batabase import sync_engine, async_engine
+from database import sync_engine, async_engine
 from models import metadata_obj, workers_table
 
 

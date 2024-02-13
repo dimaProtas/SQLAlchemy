@@ -11,5 +11,5 @@ create_table()
 # inser_workers_sync()
 # asyncio.run(insert_workers_async())
 
-insert_workers_session_sync()
-asyncio.run(insert_workers_session_async())
+# insert_workers_session_sync()
+# asyncio.run(insert_workers_session_async())

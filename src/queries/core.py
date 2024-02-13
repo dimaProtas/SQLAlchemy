@@ -1,7 +1,7 @@
 import asyncio
 from sqlalchemy import text, insert
-from database import sync_engine, async_engine
-from models import metadata_obj, workers_table
+from database import sync_engine, async_engine, Base
+# from models import metadata_obj, workers_table
 
 
 def func_sync():
@@ -22,8 +22,8 @@ async def func_async():
 
 
 def create_table():
-    metadata_obj.drop_all(sync_engine)
-    metadata_obj.create_all(sync_engine)
+    Base.metadata.drop_all(sync_engine)
+    Base.metadata.create_all(sync_engine)
 
 
 # Асинхронная операция insert

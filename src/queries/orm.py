@@ -1,11 +1,12 @@
 from database import async_session_factory, sync_session_factory, sync_engine
-from src.models import WorkersOrm, metadata_obj
+from src.models import WorkersOrm, Base
 
 
 def create_table():
-    sync_engine.echo = False
-    metadata_obj.drop_all(sync_engine)
-    metadata_obj.create_all(sync_engine)
+    print(Base.metadata)
+    Base.metadata.drop_all(sync_engine)
+    sync_engine.echo = True
+    Base.metadata.create_all(sync_engine)
     sync_engine.echo = True
 
 

@@ -1,6 +1,6 @@
-from sqlalchemy import select
+from sqlalchemy import select, func, and_, Integer, cast
 from database import async_session_factory, sync_session_factory, sync_engine, async_engine
-from src.models import WorkersOrm, Base
+from src.models import WorkersOrm, Base, ResumeOrm
 
 class SyncOrm:
     @staticmethod
@@ -41,6 +41,29 @@ class SyncOrm:
             # session.expire()
             # Отменяет действия обновления, и возвращает последние данные БД
             session.commit()
+
+    @staticmethod
+    def select_agv_compensation(like_languge: str):
+        """
+            select workload, avg(compensation)::int as avg_compensation
+            from resumes
+            where title like '%Python%' and compensation > 40000
+            group by workload
+            having avg(compensation) > 70000
+        """
+        with sync_session_factory() as session:
+            query = select(
+                ResumeOrm.workload,
+                cast(func.avg(ResumeOrm.compensation), Integer).label("avg_compensation")
+            ).select_from(ResumeOrm).filter(and_(
+                ResumeOrm.title.contains(like_languge),
+                ResumeOrm.compensation > 40000
+            )).group_by(ResumeOrm.workload)
+            print(query.compile(compile_kwargs={"literal_binds": True}))
+            res = session.execute(query)
+            result = res.all()
+            print(result[0].avg_compensation)
+
 
 
 class AsyncOrm:

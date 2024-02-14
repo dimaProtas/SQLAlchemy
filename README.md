@@ -30,3 +30,7 @@ branch_5
 -  session.expire() пример использования
 - ORM запросы (избегать SQL инъекций)
 - SQLAlchemy Core запросы 
+
+branch_6
+-  как SQL запросы переносить на язык Алхимии
+- используем func, cast, label и другие функции SQLAlchemy

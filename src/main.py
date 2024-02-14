@@ -10,6 +10,7 @@ from queries.orm import SyncOrm, AsyncOrm
 # SyncOrm.insert_workers_session_sync()
 # SyncOrm.select_workers()
 # SyncOrm.update_worker(1, 'Gus')
+SyncOrm.select_agv_compensation('Python')
 
 
 # SyncCore.create_table()
@@ -19,7 +20,9 @@ from queries.orm import SyncOrm, AsyncOrm
 # SyncCore.update_worker_query_sqlalchemy(1, 'Good name')
 
 
-async def main():
+
+
+# async def main():
     # await AsyncCore.create_tables()
     # await AsyncCore.insert_workers_async()
     # await AsyncCore.select_users()
@@ -28,9 +31,9 @@ async def main():
     # await AsyncOrm.create_table()
     # await AsyncOrm.insert_workers_session_async()
     # await AsyncOrm.select_workers()
-    await AsyncOrm.update_worker(1, 'Harek')
+    # await AsyncOrm.update_worker(1, 'Harek')
 
 
-if __name__ == "__main__":
-    asyncio.run(main())
+# if __name__ == "__main__":
+#     asyncio.run(main())
 

@@ -19,6 +19,14 @@ branch_3
 - метаданные при таком обьвлении храняться в DeclarativeBase
 - Использование sessionmaker и async_sessionmaker для взаимодейстаия с БД
 
-branch_3
+branch_4
 - Обьявление таблиц в декларативном стиле
 - Использование Annotated для типизации данных
+- Нужно импортировать Base из models.py
+
+branch_5
+- session.flush() пример использования
+- session.refresh() пример использования
+-  session.expire() пример использования
+- ORM запросы (избегать SQL инъекций)
+- SQLAlchemy Core запросы 

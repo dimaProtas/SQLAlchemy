@@ -36,12 +36,12 @@ class ResumeOrm(Base):
     update_at: Mapped[update_at]
 
 
-# metadata_obj = MetaData()
-#
-#
-# workers_table = Table(
-#     'workers',
-#     metadata_obj,
-#     Column('id', Integer, primary_key=True),
-#     Column('username', String),
-# )
+metadata_obj = MetaData()
+
+
+workers_table = Table(
+    'workers',
+    metadata_obj,
+    Column('id', Integer, primary_key=True),
+    Column('username', String),
+)

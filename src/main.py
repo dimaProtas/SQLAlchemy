@@ -10,8 +10,9 @@ from queries.orm import SyncOrm, AsyncOrm
 # SyncOrm.insert_workers_session_sync()
 # SyncOrm.select_workers()
 # SyncOrm.update_worker(1, 'Gus')
-SyncOrm.select_agv_compensation('Python')
-
+# SyncOrm.select_agv_compensation('Python')
+# SyncOrm.insert_addworkers_addresume()
+SyncOrm.join_cte_subquery_window_func()
 
 # SyncCore.create_table()
 # SyncCore.inser_workers_sync()

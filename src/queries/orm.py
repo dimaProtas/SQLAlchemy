@@ -1,4 +1,5 @@
-from sqlalchemy import select, func, and_, Integer, cast
+from sqlalchemy import select, func, and_, Integer, cast, insert
+from sqlalchemy.orm import aliased
 from database import async_session_factory, sync_session_factory, sync_engine, async_engine
 from src.models import WorkersOrm, Base, ResumeOrm
 
@@ -64,6 +65,79 @@ class SyncOrm:
             result = res.all()
             print(result[0].avg_compensation)
 
+    @staticmethod
+    def insert_addworkers_addresume():
+        with sync_session_factory() as session:
+            worker = [
+                {"username": "Artem"},  # id 3
+                {"username": "Roman"},  # id 4
+                {"username": "Petr"},  # id 5
+            ]
+            resume = [
+                {"title": "Python программист", "compensation": 60000, "workload": "fulltime", "worker_id": 3},
+                {"title": "Machine Learning Engineer", "compensation": 70000, "workload": "parttime", "worker_id": 3},
+                {"title": "Python Data Scientist", "compensation": 80000, "workload": "parttime", "worker_id": 4},
+                {"title": "Python Analyst", "compensation": 90000, "workload": "fulltime", "worker_id": 4},
+                {"title": "Python Junior Developer", "compensation": 100000, "workload": "fulltime", "worker_id": 5},
+            ]
+
+            insert_workers = insert(WorkersOrm).values(worker)
+            insert_resume = insert(ResumeOrm).values(resume)
+            session.execute(insert_workers)
+            session.execute(insert_resume)
+            session.commit()
+
+    @staticmethod
+    def join_cte_subquery_window_func(like_languge: str = 'Python'):
+        """
+        with helper2 as( -- cte запрос
+            select
+                *,
+                compensation - avg_workload_compensation as compensation_diff
+            from
+            (SELECT
+                w.id,
+                w.username,
+                r.compensation,
+                r.workload,
+                avg(r.compensation) over (partition by "workload")::int as avg_workload_compensation
+            FROM resume r
+            JOIN workers w ON r.worker_id = w.id) helper1 -- вложенный запрос
+            )
+            select * from helper2 order by compensation DESC
+        """
+        with sync_session_factory() as session:
+            r = aliased(ResumeOrm)
+            w = aliased(WorkersOrm)
+            subq = (
+                select(
+                    r,
+                    w,
+                    func.avg(r.compensation).over(partition_by=r.workload).cast(Integer).label("avg_workload_compensation"),
+                )
+                # .select_from(r) # Не обязательно
+                .join(r, r.worker_id == w.id).subquery("helper1")  # subquery("helper1") - даём название подзапросу
+            )
+            cte = (
+                select(
+                    subq.c.id,  # Обращаемся к subq как к таблице по этому нужно указывать калонку 'c'
+                    subq.c.username,
+                    subq.c.compensation,
+                    subq.c.workload,
+                    subq.c.avg_workload_compensation,
+                    (subq.c.compensation - subq.c.avg_workload_compensation).label("compensation_diff")
+                )
+                .cte("helper1")
+            )
+            query = (
+                select(cte)
+                .order_by(cte.c.compensation_diff.desc())
+            )
+
+            print(query.compile(compile_kwargs={"literal_binds": True})) # Вывести запрос в печать с подставленными значениями
+
+            res = session.execute(query)
+            print(res.all())
 
 
 class AsyncOrm:

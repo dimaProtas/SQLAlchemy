@@ -1,5 +1,5 @@
 from sqlalchemy import select, func, and_, Integer, cast, insert
-from sqlalchemy.orm import aliased
+from sqlalchemy.orm import aliased, joinedload, selectinload
 from database import async_session_factory, sync_session_factory, sync_engine, async_engine
 from src.models import WorkersOrm, Base, ResumeOrm
 
@@ -138,6 +138,58 @@ class SyncOrm:
 
             res = session.execute(query)
             print(res.all())
+
+
+    @staticmethod
+    def select_workers_with_lazy_relationship():
+        with sync_session_factory() as session:
+            query = select(WorkersOrm)
+
+            res = session.execute(query)
+
+            result = res.scalars().all()
+
+            worker_1 = result[0].resume # Связанные таблицы загружаються только по запросу
+            worker_2 = result[1].resume
+
+            print(worker_1)
+            print(worker_2)
+
+    @staticmethod
+    def select_workers_with_joined_relationship():
+        with sync_session_factory() as session:
+            query = (
+                select(WorkersOrm)
+                .options(joinedload(WorkersOrm.resume)) # Просим что бы сразу загружалась связанная таблица (сразу джойнит таблицы)
+            )
+
+            res = session.execute(query)
+
+            result = res.unique().scalars().all() # что бы не ругался SQLAlchemy добавляем unique
+
+            worker_1 = result[0].resume
+            worker_2 = result[1].resume
+
+            print(worker_1)
+            print(worker_2)
+
+    @staticmethod
+    def select_workers_with_selectin_relationship():
+        with sync_session_factory() as session:
+            query = (
+                select(WorkersOrm)
+                .options(selectinload(WorkersOrm.resume)) # Просим что бы сразу загружалась связанная таблица (сразу джойнит таблицы)
+            )
+
+            res = session.execute(query)
+
+            result = res.unique().scalars().all() # что бы не ругался SQLAlchemy добавляем unique
+
+            worker_1 = result[0].resume
+            worker_2 = result[1].resume
+
+            print(worker_1)
+            print(worker_2)
 
 
 class AsyncOrm:

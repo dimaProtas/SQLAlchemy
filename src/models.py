@@ -1,7 +1,7 @@
 import datetime
 from typing import Annotated
 from sqlalchemy import Integer, String, Column, Table, MetaData, ForeignKey, text
-from sqlalchemy.orm import Mapped, mapped_column, DeclarativeBase
+from sqlalchemy.orm import Mapped, mapped_column, DeclarativeBase, relationship
 import enum
 from src.database import str_256, Base
 
@@ -17,6 +17,8 @@ class WorkersOrm(Base):
 
     id: Mapped[intpk]
     username: Mapped[str]
+
+    resume: Mapped[list["ResumeOrm"]] = relationship()
 
 
 class Workload(enum.Enum):
@@ -34,6 +36,11 @@ class ResumeOrm(Base):
     worker_id: Mapped[int] = mapped_column(ForeignKey("workers.id", ondelete="CASCADE"))
     created_at: Mapped[created_at]
     update_at: Mapped[update_at]
+
+    worker: Mapped["WorkersOrm"] = relationship()
+
+    # def __repr__(self):
+    #     return f"Resume id={self.id}, title={self.title}" # Пример переобределения
 
 
 metadata_obj = MetaData()

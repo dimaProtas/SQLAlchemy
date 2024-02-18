@@ -12,7 +12,10 @@ from queries.orm import SyncOrm, AsyncOrm
 # SyncOrm.update_worker(1, 'Gus')
 # SyncOrm.select_agv_compensation('Python')
 # SyncOrm.insert_addworkers_addresume()
-SyncOrm.join_cte_subquery_window_func()
+# SyncOrm.join_cte_subquery_window_func()
+# SyncOrm.select_workers_with_lazy_relationship()
+# SyncOrm.select_workers_with_joined_relationship()
+SyncOrm.select_workers_with_selectin_relationship()
 
 # SyncCore.create_table()
 # SyncCore.inser_workers_sync()

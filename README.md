@@ -40,3 +40,9 @@ branch_7
 - используем CTE
 - используем subquery
 - используем aliased
+
+branch_8
+- Введение в RELATIONSHIP
+- joinedload - для 'many to one' и для 'one to one' (многие ко многим и один к одному)
+- selectinload - для 'one to many' и 'many to many' (один ко многим, многие ко многим)
+- __repr__ для красивова вывода в логи (несколько вариантов)

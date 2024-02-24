@@ -191,6 +191,24 @@ class SyncOrm:
             print(worker_1)
             print(worker_2)
 
+    @staticmethod
+    def select_workers_with_condition_relationship():
+        with sync_session_factory() as session:
+            query = (
+                select(WorkersOrm)
+                .options(selectinload(WorkersOrm.resume_parttime))
+            )
+
+            res = session.execute(query)
+
+            result = res.unique().scalars().all()  # что бы не ругался SQLAlchemy добавляем unique
+
+            worker_1 = result[0].resume
+            worker_2 = result[1].resume
+
+            print(worker_1)
+            print(worker_2)
+
 
 class AsyncOrm:
 

@@ -15,7 +15,8 @@ from queries.orm import SyncOrm, AsyncOrm
 # SyncOrm.join_cte_subquery_window_func()
 # SyncOrm.select_workers_with_lazy_relationship()
 # SyncOrm.select_workers_with_joined_relationship()
-SyncOrm.select_workers_with_selectin_relationship()
+# SyncOrm.select_workers_with_selectin_relationship()
+SyncOrm.select_workers_with_condition_relationship()
 
 # SyncCore.create_table()
 # SyncCore.inser_workers_sync()

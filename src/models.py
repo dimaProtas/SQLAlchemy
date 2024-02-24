@@ -18,7 +18,16 @@ class WorkersOrm(Base):
     id: Mapped[intpk]
     username: Mapped[str]
 
-    resume: Mapped[list["ResumeOrm"]] = relationship()
+    resume: Mapped[list["ResumeOrm"]] = relationship(
+        back_populates="worker", # Избегает предупреждений в SQLAlchemy
+        # backref="worker" # Устарело не рекомендуеться использовать
+    )
+
+    resume_parttime: Mapped[list["ResumeOrm"]] = relationship(
+        back_populates="worker",
+        primaryjoin="and_(WorkersOrm.id == ResumeOrm.worker_id, ResumeOrm.workload == 'parttime')",
+        order_by="ResumeOrm.id.desc()", # Сортировка ещё может быть asc()
+    )
 
 
 class Workload(enum.Enum):
@@ -37,7 +46,9 @@ class ResumeOrm(Base):
     created_at: Mapped[created_at]
     update_at: Mapped[update_at]
 
-    worker: Mapped["WorkersOrm"] = relationship()
+    worker: Mapped["WorkersOrm"] = relationship(
+        back_populates="resume", # Избегает предупреждений в SQLAlchemy
+    )
 
     # def __repr__(self):
     #     return f"Resume id={self.id}, title={self.title}" # Пример переобределения

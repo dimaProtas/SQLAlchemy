@@ -49,3 +49,7 @@ branch_8
 
 branch_9 
 - Продвинутый RELATIONSHIP
+
+branch_10
+- Pydantic DTO
+- FastAPI + SQLAlchemy

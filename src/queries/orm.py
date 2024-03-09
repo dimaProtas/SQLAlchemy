@@ -1,7 +1,13 @@
 from sqlalchemy import select, func, and_, Integer, cast, insert
 from sqlalchemy.orm import aliased, joinedload, selectinload
 from database import async_session_factory, sync_session_factory, sync_engine, async_engine
-from src.models import WorkersOrm, Base, ResumeOrm
+from models import WorkersOrm, Base, ResumeOrm, VacanciesOrm, VacanciesRepliesOrm
+from schemas import (
+    WorkersDTO,
+    ResumeRelVacanciesRepliedDTO,
+    ResumesRelVacanciesRepliedWithoutVacancyCompensationDTO,
+    WorkerRelDTO,
+)
 
 class SyncOrm:
     @staticmethod
@@ -240,3 +246,48 @@ class AsyncOrm:
             current_worker = await session.get(WorkersOrm, worker_id)
             current_worker.username = new_username
             await session.commit()
+
+    @staticmethod
+    async def select_resumes_with_all_relationships():
+        async with async_session_factory() as session:
+            query = (
+                select(ResumeOrm)
+                .options(joinedload(ResumeOrm.worker))
+                .options(selectinload(ResumeOrm.vacancies_replied).load_only(VacanciesOrm.title))
+            )
+
+            res = await session.execute(query)
+            result_orm = res.unique().scalars().all()
+            print(f"{result_orm=}")
+            # Обратите внимание, что созданная в видео модель содержала лишний столбец compensation
+            # И так как он есть в схеме ResumesRelVacanciesRepliedDTO, столбец compensation был вызван
+            # Алхимией через ленивую загрузку. В асинхронном варианте это приводило к краху программы
+            result_dto = [ResumesRelVacanciesRepliedWithoutVacancyCompensationDTO.model_validate(row, from_attributes=True) for row in result_orm]
+            print(f"{result_dto=}")
+            return result_dto
+
+    @staticmethod
+    async def convert_workers_to_dto():
+        async with async_session_factory() as session:
+            query = (
+                select(WorkersOrm)
+                .options(selectinload(WorkersOrm.resume))
+                .limit(2)
+            )
+
+            res = await session.execute(query)
+            result_orm = res.scalars().all()
+            print(f"{result_orm=}")
+            result_dto = [WorkerRelDTO.model_validate(row, from_attributes=True) for row in result_orm]
+            print(f"{result_dto=}")
+            return result_dto
+
+
+    @staticmethod
+    async def select_workers_fastapi():
+        async with async_session_factory() as session:
+            query = select(WorkersOrm)
+            res = await session.execute(query)
+            result_orm = res.scalars().all()
+            result_workers = [WorkersDTO.model_validate(row, from_attributes=True) for row in result_orm]
+            return result_workers

@@ -19,7 +19,8 @@ class Settings(BaseSettings):
         # postgresql+psycopg://admin:adminpasssword@localhost:5432/pg_database
         return f"postgresql+psycopg://{self.DB_USER}:{self.DB_PASSWORD}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
 
-    model_config = SettingsConfigDict(env_file="../.env")
+    model_config = SettingsConfigDict(env_file="/home/dima_protasevich/Documents/SQLAlshemy/first_project_alshemy/.env")
+
 
 
 settings = Settings()

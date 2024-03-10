@@ -247,13 +247,14 @@ class AsyncOrm:
             current_worker.username = new_username
             await session.commit()
 
+    # Запрос к таблице со сфязью many_to_many
     @staticmethod
-    async def select_resumes_with_all_relationships():
+    async def select_resumes_with_all_relationships_many_to_many():
         async with async_session_factory() as session:
             query = (
                 select(ResumeOrm)
                 .options(joinedload(ResumeOrm.worker))
-                .options(selectinload(ResumeOrm.vacancies_replied).load_only(VacanciesOrm.title))
+                .options(selectinload(ResumeOrm.vacancies_replied).load_only(VacanciesOrm.title)) # часть где выполняеться запрос к таблице many_to_many
             )
 
             res = await session.execute(query)
@@ -272,7 +273,7 @@ class AsyncOrm:
             query = (
                 select(WorkersOrm)
                 .options(selectinload(WorkersOrm.resume))
-                .limit(2)
+                # .limit(2)
             )
 
             res = await session.execute(query)

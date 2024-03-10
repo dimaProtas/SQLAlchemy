@@ -70,8 +70,8 @@ class ResumeOrm(Base):
 
     vacancies_replied: Mapped[list["VacanciesOrm"]] = relationship(
         back_populates="resumes_replied",
-        secondary="vacancies_replies",
-    )
+        secondary="vacancies_replies", # так же нужно указывать для связи many_to_many
+    ) # Для связи many_to_many
 
     repr_cols_num = 2
     repr_cols = ("created_at", )
@@ -95,6 +95,7 @@ class VacanciesOrm(Base):
     )
 
 
+# Таблица для связи many_to_many
 class VacanciesRepliesOrm(Base):
     __tablename__ = "vacancies_replies"
 

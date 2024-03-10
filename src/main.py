@@ -55,7 +55,7 @@ def create_fastapi_app():
 
     @app.get("/resumes", tags=["Ресюме"])
     async def get_resumes():
-        resumes = await AsyncOrm.select_resumes_with_all_relationships()
+        resumes = await AsyncOrm.select_resumes_with_all_relationships_many_to_many()
         return resumes
 
     @app.get("/workers_api", tags=["Кондидаты API"])

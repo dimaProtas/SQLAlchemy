@@ -53,3 +53,7 @@ branch_9
 branch_10
 - Pydantic DTO
 - FastAPI + SQLAlchemy
+
+branch_11
+- Связывание моделей через m2m таблицу
+- Получаем сразу 2 relationships в запросе
